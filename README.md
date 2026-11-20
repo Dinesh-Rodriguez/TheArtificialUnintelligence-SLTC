@@ -49,4 +49,3 @@ python main.py
 ## Timeline
 
 - **20 November 2026:** Proposal Submission (`docs/Proposal.docx`) & Repository Initialization
-- **29 November 2026:** Phase 1 MVP Delivery (Agents 1–4, Live Execution Traces & 40-Scenario Benchmark Report)
