@@ -9,7 +9,21 @@ interface Props {
 
 export default function TraceDrawer({ open, events, onClose }: Props) {
   const plainEventName: Record<string, string> = {
-    "intake.completed": "Care information captured",
+    "auth.registered": "Account created",
+    "auth.signed_in": "Signed in",
+    "auth.signed_out": "Signed out",
+    "demo.initialized": "Sample data restored",
+    "verification.submitted": "Verification documents submitted",
+    "verification.document_viewed": "Verification document opened",
+    "verification.approved": "Provider verified",
+    "verification.rejected": "Provider verification rejected",
+    "chat.triaged": "Care priority checked",
+    "chat.attachment_viewed": "Chat attachment opened",
+    "review.viewed": "Clinician review opened",
+    "profile.viewed": "Patient profile opened",
+    "review.saved": "Clinician review saved",
+    "review.signed": "Care plan signed and shared",
+    "review.plan_viewed": "Signed care plan opened",
     "triage.completed": "Care priority checked",
     "red_flag_guard": "Emergency warning checked",
     "mcp_scope_check": "Permission & privacy check",
@@ -43,25 +57,14 @@ export default function TraceDrawer({ open, events, onClose }: Props) {
       {open && <button className="drawer-backdrop" aria-label="Close trace drawer" onClick={onClose} />}
       <aside className={`trace-drawer ${open ? "open" : ""}`} aria-hidden={!open} aria-label="Trace and guardrails inspector">
         <div className="drawer-header">
-          <div><span className="eyebrow">YOUR SAFETY RECORD</span><h2>Safety & Activity</h2></div>
+          <div><h2>Trace &amp; Guardrails</h2></div>
           <button type="button" onClick={onClose} aria-label="Close trace drawer">×</button>
         </div>
         <div className="trace-summary">
           <span><strong>{events.length}</strong> events</span>
-          <span><i /> Privacy and safety checks active</span>
+          <span>Server-recorded workflow events</span>
         </div>
-        <section className="mcp-matrix" aria-label="Scoped MCP permission summary">
-          <div className="mcp-heading"><span className="eyebrow">WHAT THE SYSTEM MAY ACCESS</span><strong>Protected Information Services</strong></div>
-          {[
-            ["Health Records", "Read only your health record", "Your records only"],
-            ["Appointments", "View and manage your appointments", "Your consent"],
-            ["Lab Results", "View authorized test results", "Your results only"],
-            ["Care Guidance", "Use approved clinical guidance", "No personal identity"],
-            ["Patient Alerts", "Send approved notifications", "Clinician approved"],
-          ].map(([name, scope, enforcement]) => (
-            <div className="mcp-row" key={name}><span className="mcp-dot" /><div><strong>{name}</strong><small>{scope}</small></div><span className="mcp-status">{enforcement}</span></div>
-          ))}
-        </section>
+        {!events.length && <p className="trace-empty">No activity recorded yet.</p>}
         <div className="trace-list">
           {[...events].sort((a, b) => b.timestamp.localeCompare(a.timestamp)).map((event) => (
             <article className="trace-item" key={event.id}>
