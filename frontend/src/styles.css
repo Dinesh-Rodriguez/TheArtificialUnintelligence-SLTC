@@ -7,10 +7,11 @@
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; min-height: 100vh; }
+html, body, #root { width: 100%; height: 100%; }
+body { margin: 0; min-width: 320px; overflow: hidden; }
 button, input, textarea, select { font: inherit; }
 button { cursor: pointer; }
-.app-shell { min-height: 100vh; background: #f3f6f5; }
+.app-shell { height: 100vh; min-height: 0; overflow: hidden; background: #f3f6f5; }
 
 .topbar {
   height: 76px; display: flex; align-items: center; justify-content: space-between;
@@ -33,11 +34,11 @@ button { cursor: pointer; }
 .nav-tabs button span { margin-right: 7px; }
 .nav-tabs button.active { color: #176b5b; border-bottom-color: #176b5b; }
 
-.main-content { height: calc(100vh - 134px); min-height: 650px; overflow: hidden; }
+.main-content { height: calc(100vh - 134px); min-height: 0; overflow: hidden; }
 .loading { display: grid; height: 100%; place-items: center; color: #71817d; }
 
-.chat-layout { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 330px; background: #fff; }
-.conversation { min-width: 0; display: grid; grid-template-rows: auto auto 1fr; border-right: 1px solid #dde7e3; }
+.chat-layout { height: 100%; min-height: 0; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) 330px; background: #fff; }
+.conversation { min-width: 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; border-right: 1px solid #dde7e3; }
 .conversation-heading, .section-heading { display: flex; justify-content: space-between; align-items: center; }
 .conversation-heading { height: 94px; padding: 18px 34px; border-bottom: 1px solid #edf1ef; }
 .eyebrow { display: block; color: #879792; font-size: 10px; font-weight: 800; letter-spacing: 1.25px; margin-bottom: 5px; }
@@ -46,7 +47,7 @@ h1 { font-family: Georgia, serif; font-size: 27px; }
 h2 { font-family: Georgia, serif; font-size: 22px; }
 .online { color: #71817d; font-size: 12px; }
 .online i { display: inline-block; width: 8px; height: 8px; background: #56a58f; border-radius: 50%; margin-right: 6px; }
-.message-list { overflow-y: auto; padding: 20px 34px 28px; background: linear-gradient(180deg, #fbfcfb, #f8faf9); }
+.message-list { min-height: 0; height: 100%; overflow-y: auto; overscroll-behavior: contain; padding: 20px 34px 28px; background: linear-gradient(180deg, #fbfcfb, #f8faf9); }
 .message { display: flex; gap: 11px; max-width: 720px; margin: 0 0 18px; }
 .message.user { margin-left: auto; flex-direction: row-reverse; }
 .avatar { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #176b5b; color: #fff; font-family: Georgia, serif; }
@@ -79,7 +80,7 @@ h2 { font-family: Georgia, serif; font-size: 22px; }
 .image-preview { width: 180px; height: 120px; border: 1px solid #dde6e3; border-radius: 9px; padding: 3px; background: white; overflow: hidden; }
 .image-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
 
-.composer-wrap { background: #fff; display: flex; flex-direction: column; justify-content: end; padding: 20px; }
+.composer-wrap { min-height: 0; height: 100%; overflow: hidden; background: #fff; display: flex; flex-direction: column; justify-content: end; padding: 20px; }
 .composer { border: 1px solid #dce6e3; border-radius: 12px; min-height: 180px; position: relative; box-shadow: 0 8px 24px #26473a0d; }
 .composer.dragging { border: 2px dashed #176b5b; background: #f4faf8; }
 .drop-overlay { position: absolute; z-index: 3; inset: 0; display: grid; place-items: center; background: #eff7f4e8; color: #176b5b; font-weight: 800; border-radius: 12px; }
@@ -197,7 +198,7 @@ h2 { font-family: Georgia, serif; font-size: 22px; }
 .scenario-chip.emergency small { color: #a34a41; }
 .scenario-chip.mental { background: #faf8fd; }
 .scenario-chip.schedule { background: #f7fafc; }
-.conversation { grid-template-rows: auto auto auto 1fr; }
+.conversation { display: flex; flex-direction: column; }
 .empty-state { height: 180px; display: grid; place-items: center; align-content: center; color: #81918d; }
 .empty-state span { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: #eaf3f0; color: #3d7767; margin-bottom: 8px; }
 .empty-state strong { color: #536d66; }
@@ -253,7 +254,7 @@ h2 { font-family: Georgia, serif; font-size: 22px; }
 .intake-item strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #526861; font-size: 8px; }
 .intake-item small { color: #879792; font-size: 8px; margin-top: 2px; }
 .intake-item.captured small { color: #397c68; font-weight: 800; }
-.conversation { grid-template-rows: auto auto auto auto 1fr; }
+.conversation { grid-template-rows: auto auto auto 1fr; }
 .scenario-row { grid-template-columns: repeat(6, minmax(132px, 1fr)); }
 .clinician-workbench { margin: 18px 0 8px 45px; max-width: 760px; border: 1px solid #d8cbb7; border-left: 4px solid #c09142; background: #fffdf8; border-radius: 10px; padding: 14px; }
 .workbench-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
@@ -311,14 +312,138 @@ h2 { font-family: Georgia, serif; font-size: 22px; }
 .benchmark-table th { background: #f4f7f6; color: #60736d; text-align: left; padding: 9px; border: 1px solid #e4eae7; }
 .benchmark-table td { color: #52665f; padding: 10px 9px; border: 1px solid #e7ecea; }
 
+/* Stable 100% desktop workspace */
+@media (min-width: 1181px) {
+  .topbar { height: 76px; }
+  .chat-layout { grid-template-columns: minmax(560px, 1fr) 360px; }
+  .conversation-heading { flex: 0 0 94px; height: 94px; }
+  .scenario-row { flex: 0 0 62px; min-height: 62px; padding: 9px 34px; }
+  .scenario-chip { min-height: 44px; }
+  .intake-progress { flex: 0 0 77px; }
+  .message-list { flex: 1 1 auto; }
+  .composer-wrap { padding: 18px 20px; }
+  .profile-layout { max-width: 1180px; }
+  .calendar-card { padding-inline: 38px; }
+  .appointments-card { width: 360px; }
+  .schedule-layout { grid-template-columns: minmax(0, 1fr) 360px; }
+}
+
+@media (max-width: 1180px) {
+  .topbar { padding-left: 20px; padding-right: 20px; }
+  .brand { min-width: 210px; }
+  .brand div span { max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .header-actions { gap: 6px; }
+  .role-toggle { min-width: 210px; }
+  .role-toggle span { min-width: 96px; padding-inline: 6px; }
+  .trace-button, .benchmark-button, .reset-button { padding-inline: 7px; }
+  .intake-grid { grid-template-columns: repeat(3, minmax(150px, 1fr)); }
+  .intake-item { min-height: 42px; }
+  .intake-item strong { white-space: normal; line-height: 1.15; }
+  .scenario-row { grid-template-columns: repeat(3, minmax(180px, 1fr)); height: 112px; overflow-y: auto; }
+  .scenario-chip { min-height: 50px; }
+}
+
+.role-toggle {
+  min-width: 250px;
+  border: 1px solid #cbdad5;
+  background: #eef3f1;
+  gap: 3px;
+}
+.role-toggle span {
+  min-width: 118px;
+  text-align: center;
+  padding: 8px 9px;
+  font-weight: 750;
+}
+.role-toggle span.active {
+  background: #176b5b;
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(23, 107, 91, .18);
+}
+.clinician-sidework {
+  height: 100%;
+  overflow-y: auto;
+  border: 1px solid #d9d1bf;
+  border-top: 4px solid #b78a42;
+  border-radius: 10px;
+  background: #fffdf8;
+  padding: 11px;
+}
+.clinician-sidework .draft-heading { margin-bottom: 8px; }
+.clinician-sidework h3 { font-size: 14px; color: #5d4b31; }
+.clinician-sidework .pathway-card,
+.clinician-sidework .differential-card { margin-bottom: 7px; }
+.clinician-sidework .differential-card p { margin: 5px 0; color: #6f6658; font-size: 9px; line-height: 1.45; }
+.hidden-patient { display: block; color: #9a7250; margin-top: 5px; }
+.side-soap { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.side-soap label { display: flex; flex-direction: column; gap: 3px; color: #66766f; font-size: 9px; font-weight: 800; }
+.side-soap textarea { height: 48px; resize: vertical; border: 1px solid #dfd8c8; border-radius: 6px; background: #fff; padding: 6px; font-size: 9px; }
+.clinician-sidework .prescription-field textarea { min-height: 44px; height: 44px; }
+.clinician-sidework .allergy-warning { padding: 6px; margin: 6px 0; }
+.clinician-sidework .override-note { margin-top: 6px; }
+.clinician-sidework .override-note input { height: 34px; }
+.clinician-sidework .workbench-actions { display: grid; grid-template-columns: 80px 1fr; }
+.clinician-sidework .workbench-actions button { padding: 8px 6px; font-size: 10px; }
+
+@media (max-height: 700px) {
+  .scenario-row { flex: 0 0 48px; min-height: 48px; overflow-x: auto; }
+  .scenario-chip { min-height: 38px; }
+  .scenario-chip span { white-space: normal; line-height: 1.12; }
+  .scenario-chip small { margin-top: 3px; }
+  .clinician-sidework { padding: 8px; }
+  .clinician-sidework .draft-heading { margin-bottom: 5px; }
+  .clinician-sidework .pathway-card { display: none; }
+  .clinician-sidework .differential-card { margin-bottom: 5px; }
+  .clinician-sidework .side-soap { gap: 4px; }
+  .side-soap textarea { height: 38px; }
+  .clinician-sidework .prescription-field textarea { height: 36px; min-height: 36px; }
+  .clinician-sidework .allergy-warning { margin: 4px 0; }
+  .clinician-sidework .override-note { display: none; }
+}
+
 @media (max-width: 980px) {
   .chat-layout { grid-template-columns: 1fr 280px; }
   .schedule-layout { grid-template-columns: 1fr 280px; }
   .clinical-grid { grid-template-columns: 1fr; }
 }
+
+@media (max-height: 700px) {
+  .topbar { height: 56px; }
+  .brand-mark { width: 36px; height: 36px; border-radius: 10px; }
+  .nav-tabs, .nav-tabs button { height: 44px; }
+  .main-content { height: calc(100vh - 100px); }
+  .conversation-heading { flex: 0 0 48px; height: 48px; padding: 5px 24px; }
+  .conversation-heading h1 { font-size: 20px; }
+  .conversation-heading .online { font-size: 10px; }
+  .emergency-banner { flex: 0 0 auto; margin: 5px 24px 0; padding: 5px 8px; }
+  .emergency-icon { width: 28px; height: 28px; }
+  .intake-progress { flex: 0 0 auto; margin: 5px 24px 0; padding: 4px 8px; }
+  .intake-heading { margin-bottom: 4px; }
+  .intake-grid { gap: 4px; }
+  .intake-item { padding: 4px; }
+  .scenario-row { flex: 0 0 42px; min-height: 42px; padding: 4px 24px; gap: 6px; }
+  .scenario-chip { min-height: 34px; padding: 4px 7px; }
+  .message-list { flex: 1 1 auto; height: auto; min-height: 80px; padding: 8px 24px 12px; }
+  .composer-wrap { padding: 12px; }
+  .composer { min-height: 150px; }
+  .composer textarea { height: 94px; }
+  .composer-actions { height: 54px; }
+  .trace-drawer { overflow-y: auto; }
+  .trace-list { height: auto; max-height: none; }
+  .profile-layout { padding-top: 16px; padding-bottom: 30px; }
+  .calendar-card { padding-top: 16px; }
+  .appointments-card { padding-top: 16px; }
+}
+
 @media (max-width: 760px) {
-  .topbar { height: auto; min-height: 70px; padding: 10px 16px; }
-  .brand div span, .role-toggle { display: none; }
+  .topbar { height: auto; min-height: 94px; padding: 8px 12px; align-items: flex-start; }
+  .brand { min-width: 160px; }
+  .brand div span { max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .header-actions { max-width: calc(100vw - 190px); flex-wrap: wrap; justify-content: flex-end; row-gap: 4px; }
+  .role-toggle { min-width: 180px; width: 180px; }
+  .role-toggle span { min-width: 84px; padding: 6px 5px; font-size: 9px; }
+  .trace-button, .benchmark-button { display: none; }
+  .reset-button { font-size: 10px; padding: 5px; }
   .nav-tabs { padding: 0 8px; gap: 0; }
   .nav-tabs button { flex: 1; padding: 0 4px; font-size: 12px; }
   .main-content { height: calc(100vh - 128px); }

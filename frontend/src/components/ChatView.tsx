@@ -47,9 +47,12 @@ export default function ChatView({ messages, setMessages, rolePreview, profile, 
     "Current Medications": "Pending",
     "Jurisdiction (Country/Region)": "Pending",
   });
-  const endRef = useRef<HTMLDivElement>(null);
+  const messageListRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+  useEffect(() => {
+    const list = messageListRef.current;
+    if (list) list.scrollTo({ top: list.scrollHeight, behavior: "smooth" });
+  }, [messages]);
   useEffect(() => {
     setIntake((current) => ({
       ...current,
@@ -231,7 +234,7 @@ export default function ChatView({ messages, setMessages, rolePreview, profile, 
           ))}
         </div>
 
-        <div className="message-list">
+        <div className="message-list" ref={messageListRef}>
           {messages.length === 0 && <div className="empty-state"><span>+</span><strong>No messages yet</strong><p>Choose a demo scenario or describe how you feel.</p></div>}
           {messages.map((message) => (
             <article className={`message ${message.role}`} key={message.id}>
@@ -261,48 +264,43 @@ export default function ChatView({ messages, setMessages, rolePreview, profile, 
               </div>
             </article>
           ))}
-          {rolePreview === "doctor" && (
-            <section className="clinician-workbench" aria-label="Clinician decision and sign-off workbench">
-              <div className="draft-heading">
-                <div><span className="eyebrow">CLINICIAN WORKSPACE · AGENTS 2 & 4</span><h3>Decision & Sign-Off Workbench</h3></div>
-                <span className="review-required">{approved ? "APPROVED" : "Clinician Review Required"}</span>
-              </div>
-
-              <div className="workbench-grid">
-                <article className="pathway-card">
-                  <span className="credential-badge">{pathway}</span>
-                  <strong>{pathway === "LOCAL_CLINICAL" ? "Verified local license required · SLMC" : "Cross-border specialist eligible"}</strong>
-                  <p>{pathway === "LOCAL_CLINICAL" ? "Regional symptoms or urgency require an appropriately licensed local clinician." : "The current context is suitable for a specialist consult outside the patient's jurisdiction."}</p>
-                </article>
-                <article className="differential-card">
-                  <span className="eyebrow">AI SUGGESTION (UNVERIFIED)</span>
-                  <h4>Clinical considerations</h4>
-                  <ul><li>Regional infectious or inflammatory causes should be considered.</li><li>Symptoms require direct clinical examination and local testing.</li></ul>
-                  <div className="guideline-tag">Guideline tag · WHO / MOH triage reference</div>
-                  <p className="hidden-patient">Hidden from Patient UI to prevent self-diagnosis anxiety</p>
-                </article>
-              </div>
-
-              <div className="soap-grid">
-                <label><span>Subjective</span><textarea value={subjective} onChange={(event) => setSubjective(event.target.value)} /></label>
-                <label><span>Objective</span><textarea value={objective} onChange={(event) => setObjective(event.target.value)} /></label>
-                <label><span>Assessment</span><textarea value={assessment} onChange={(event) => setAssessment(event.target.value)} /></label>
-                <label><span>Plan</span><textarea value={plan} onChange={(event) => setPlan(event.target.value)} /></label>
-              </div>
-              <label className="prescription-field"><span>Prescription draft</span><textarea value={draftPrescription} onChange={(event) => setDraftPrescription(event.target.value)} /></label>
-              <div className="allergy-warning"><strong>Deterministic Drug & Allergy Check</strong><span>Penicillin allergy detected. Confirm no penicillin or cross-reactive antibiotic is proposed.</span></div>
-              <label className="override-note"><span>Optional override note</span><input value={overrideNote} onChange={(event) => setOverrideNote(event.target.value)} placeholder="Document why you are changing the AI suggestion" /></label>
-              <div className="workbench-actions">
-                <button type="button" className="secondary" onClick={() => { addTrace({ type: "mcp_scope_check", details: `AI suggestion overridden by clinician${overrideNote ? `: ${overrideNote}` : "."}`, actor: "Doctor Override", status: "review_required" }); notify("AI suggestion overridden. Override note recorded."); }}>Override AI Suggestion</button>
-                <button type="button" className="primary" onClick={approveSignOff} disabled={approved}>{approved ? "✓ Prescription APPROVED" : "Approve & Sign Off"}</button>
-              </div>
-            </section>
-          )}
-          <div ref={endRef} />
         </div>
       </section>
 
       <aside className="composer-wrap">
+        {rolePreview === "doctor" ? (
+          <div className="clinician-sidework">
+            <div className="draft-heading">
+              <div><span className="eyebrow">CLINICIAN WORKSPACE · AGENTS 2 & 4</span><h3>Decision & Sign-Off</h3></div>
+              <span className="review-required">{approved ? "APPROVED" : "Review Required"}</span>
+            </div>
+            <article className="pathway-card">
+              <span className="credential-badge">{pathway}</span>
+              <strong>{pathway === "LOCAL_CLINICAL" ? "Verified local license · SLMC" : "Cross-border specialist eligible"}</strong>
+              <p>{pathway === "LOCAL_CLINICAL" ? "Regional symptoms or urgency require a licensed local clinician." : "The context is suitable for a cross-border specialist consult."}</p>
+            </article>
+            <article className="differential-card">
+              <span className="eyebrow">AI SUGGESTION (UNVERIFIED)</span>
+              <h4>Clinical considerations</h4>
+              <p>Regional infectious or inflammatory causes require direct examination and local testing.</p>
+              <div className="guideline-tag">WHO / MOH triage reference</div>
+              <small className="hidden-patient">Hidden from Patient UI</small>
+            </article>
+            <div className="side-soap">
+              <label><span>Subjective</span><textarea value={subjective} onChange={(event) => setSubjective(event.target.value)} /></label>
+              <label><span>Objective</span><textarea value={objective} onChange={(event) => setObjective(event.target.value)} /></label>
+              <label><span>Assessment</span><textarea value={assessment} onChange={(event) => setAssessment(event.target.value)} /></label>
+              <label><span>Plan</span><textarea value={plan} onChange={(event) => setPlan(event.target.value)} /></label>
+            </div>
+            <label className="prescription-field"><span>Prescription draft</span><textarea value={draftPrescription} onChange={(event) => setDraftPrescription(event.target.value)} /></label>
+            <div className="allergy-warning"><strong>Drug & Allergy Check</strong><span>Penicillin conflict detected.</span></div>
+            <label className="override-note"><span>Override note</span><input value={overrideNote} onChange={(event) => setOverrideNote(event.target.value)} placeholder="Optional" /></label>
+            <div className="workbench-actions">
+              <button type="button" className="secondary" onClick={() => { addTrace({ type:"mcp_scope_check", details:`AI suggestion overridden${overrideNote ? `: ${overrideNote}` : "."}`, actor:"Doctor Override", status:"review_required" }); notify("AI suggestion overridden."); }}>Override</button>
+              <button type="button" className="primary" onClick={approveSignOff} disabled={approved}>{approved ? "APPROVED" : "Approve & Sign Off"}</button>
+            </div>
+          </div>
+        ) : (
         <div className={`composer ${dragging ? "dragging" : ""}`} onDragOver={(event) => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={(event) => { event.preventDefault(); setDragging(false); addFiles(event.dataTransfer.files); }}>
           {dragging && <div className="drop-overlay">Drop PDF, JPG, or PNG</div>}
           {files.length > 0 && (
@@ -318,6 +316,7 @@ export default function ChatView({ messages, setMessages, rolePreview, profile, 
             <button className="send-button" type="button" onClick={() => void send()} disabled={sending || (!text.trim() && files.length === 0)}>{sending ? "Sending…" : "Send"} <span>➤</span></button>
           </div>
         </div>
+        )}
         <p className="privacy-note">Private workspace · Attachment review is human-controlled</p>
       </aside>
       {preview && <div className="image-modal" role="dialog" aria-modal="true" onClick={() => setPreview(null)}><button type="button" aria-label="Close image preview" onClick={() => setPreview(null)}>×</button><img src={preview} alt="Attachment preview" /></div>}
