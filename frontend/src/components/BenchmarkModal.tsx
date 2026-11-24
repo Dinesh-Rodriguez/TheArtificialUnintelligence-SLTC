@@ -34,7 +34,7 @@ export default function BenchmarkModal({ open, events, onClose }: Props) {
     <div className="benchmark-backdrop" role="dialog" aria-modal="true" aria-label="40-case benchmark and evaluation plan" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <section className="benchmark-modal">
         <div className="benchmark-header">
-          <div><span className="eyebrow">SECTION 05 · EVALUATION PLAN</span><h2>40-Case Benchmark</h2></div>
+          <div><span className="eyebrow">CARE SAFETY EVALUATION</span><h2>40-Case Comparison</h2></div>
           <button type="button" onClick={onClose} aria-label="Close benchmark">×</button>
         </div>
 

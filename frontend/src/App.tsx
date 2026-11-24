@@ -64,7 +64,7 @@ export default function App() {
         setTraceEvents(events.map((event) => ({
           ...event,
           trace_id: `MB-${event.id.toUpperCase()}`,
-          actor: event.type.includes("appointment") ? "Scheduling Agent" : "MedBridge System",
+          actor: event.type.includes("appointment") ? "Appointment Service" : "MedBridge Care System",
           status: event.type.includes("red_flag") ? "blocked" : "allowed",
         })));
       } catch {
@@ -88,7 +88,7 @@ export default function App() {
     }
     await load();
     setTab("chat");
-    setToast("Demo data restored.");
+    setToast("Sample workspace restored.");
   };
 
   const addTrace = (event: Omit<TraceEvent, "id" | "timestamp">) => {
@@ -103,15 +103,15 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="topbar">
-        <div className="brand"><span className="brand-mark">M</span><div><strong>MedBridge AI</strong><span>Human-Centric Telemedicine • Phase 1 UI</span></div></div>
+        <div className="brand"><span className="brand-mark">M</span><div><strong>MedBridge AI</strong><span>Human-Centric Telemedicine</span></div></div>
         <div className="header-actions">
           <button className="role-toggle" type="button" onClick={() => setRolePreview(rolePreview === "patient" ? "doctor" : "patient")}>
             <span className={rolePreview === "patient" ? "active" : ""}>Patient View</span>
             <span className={rolePreview === "doctor" ? "active" : ""}>Doctor Review Preview</span>
           </button>
-          <button className="trace-button" type="button" onClick={() => setTraceOpen((open) => !open)}>Trace & Guardrails</button>
-          <button className="benchmark-button" type="button" onClick={() => setBenchmarkOpen(true)}>40-Case Benchmark</button>
-          <button className="reset-button" type="button" onClick={() => void reset()}><span>↻</span> Reset Demo Data</button>
+          <button className="trace-button" type="button" onClick={() => setTraceOpen((open) => !open)}>Safety & Activity</button>
+          <button className="benchmark-button" type="button" onClick={() => setBenchmarkOpen(true)}>40-Case Evaluation</button>
+          <button className="reset-button" type="button" onClick={() => void reset()}><span>↻</span> Restore Sample Data</button>
         </div>
       </header>
 
@@ -142,9 +142,9 @@ function ProfileView({ profile, setProfile, notify }: { profile: Profile; setPro
   const [saved, setSaved] = useState(false);
   const dirty = JSON.stringify(draft) !== JSON.stringify(profile);
   const auditEntries = [
-    { timestamp: new Date().toISOString(), actor: "Dr. N. Perera", role: "Clinician", action: "Viewed clinical summary", server: "Records MCP", consent: "Authorized" },
-    { timestamp: new Date(Date.now() - 3600000).toISOString(), actor: "Intake Agent", role: "Automated agent", action: "Read profile & allergies", server: "Records MCP", consent: "Consent verified" },
-    { timestamp: new Date(Date.now() - 86400000).toISOString(), actor: "Scheduling Agent", role: "Automated agent", action: "Checked appointment availability", server: "Scheduling MCP", consent: "Authorized" },
+    { timestamp: new Date().toISOString(), actor: "Dr. N. Perera", role: "Clinician", action: "Viewed clinical summary", server: "Health Records", consent: "Authorized" },
+    { timestamp: new Date(Date.now() - 3600000).toISOString(), actor: "Care Intake", role: "Automated check", action: "Checked profile & allergies", server: "Health Records", consent: "Consent verified" },
+    { timestamp: new Date(Date.now() - 86400000).toISOString(), actor: "Appointment Service", role: "Care scheduling", action: "Checked appointment availability", server: "Appointments", consent: "Authorized" },
   ];
 
   const save = async (event: FormEvent) => {
@@ -188,10 +188,10 @@ function ProfileView({ profile, setProfile, notify }: { profile: Profile; setPro
         <button className="primary save-button" type="submit">Save profile</button>
       </section>
       <section className="profile-card audit-card">
-        <div className="section-heading"><div><span className="eyebrow">DATA TRANSPARENCY</span><h2>Immutable Record Access Audit Log</h2></div><span className="saved">Append-only</span></div>
+        <div className="section-heading"><div><span className="eyebrow">YOUR PRIVACY RECORD</span><h2>Who accessed your health information</h2></div><span className="saved">Secure activity log</span></div>
         <div className="audit-table-wrap">
           <table className="audit-table">
-            <thead><tr><th>Timestamp</th><th>Actor / Role</th><th>Action</th><th>MCP Server</th><th>Consent Status</th></tr></thead>
+            <thead><tr><th>Date & time</th><th>Who accessed it</th><th>What they did</th><th>Protected service</th><th>Permission</th></tr></thead>
             <tbody>{auditEntries.map((entry, index) => (
               <tr key={index}>
                 <td>{new Date(entry.timestamp).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}</td>
@@ -268,7 +268,7 @@ function ScheduleView({ appointments, setAppointments, notify }: { appointments:
           {appointments.filter((item) => item.status !== "cancelled").sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`)).map((appointment) => (
             <button className="appointment-item" key={appointment.id} onClick={() => setSelected(appointment)}>
               <div className="date-box"><strong>{new Date(`${appointment.date}T12:00:00`).getDate()}</strong><span>{new Date(`${appointment.date}T12:00:00`).toLocaleDateString([], { month: "short" })}</span></div>
-              <div className="appointment-info"><strong>{appointment.specialty}</strong><span>{appointment.time} · {appointment.clinician}</span><small className={`pathway-label ${appointment.care_pathway === "GLOBAL_CONSULT" ? "global" : ""}`}>{appointment.care_pathway}</small></div>
+              <div className="appointment-info"><strong>{appointment.specialty}</strong><span>{appointment.time} · {appointment.clinician}</span><small className={`pathway-label ${appointment.care_pathway === "GLOBAL_CONSULT" ? "global" : ""}`}>{appointment.care_pathway === "LOCAL_CLINICAL" ? "Nearby clinical care" : "Specialist consult"}</small></div>
               <span className="chevron">›</span>
             </button>
           ))}

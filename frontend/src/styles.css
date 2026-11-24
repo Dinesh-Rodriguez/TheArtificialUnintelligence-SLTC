@@ -1,7 +1,7 @@
 :root {
   font-family: Inter, "Segoe UI", system-ui, sans-serif;
-  color: #16312d;
-  background: #f3f6f5;
+  color: #17352f;
+  background: #f2f5f4;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -185,6 +185,11 @@ h2 { font-family: Georgia, serif; font-size: 22px; }
   --line: #dde7e3;
 }
 .topbar { box-shadow: 0 2px 14px rgba(18, 47, 58, .035); }
+.topbar { height: 72px; }
+.brand-mark { background: #163f4a; box-shadow: 0 5px 14px rgba(22,63,74,.16); }
+.brand strong { color: #163f4a; font-size: 19px; }
+.nav-tabs { height: 54px; }
+.nav-tabs button { height: 54px; }
 .header-actions { flex-wrap: nowrap; }
 .trace-button { border: 1px solid var(--line); background: #fff; color: #49625b; border-radius: 8px; padding: 9px 11px; font-size: 12px; font-weight: 700; }
 .trace-button:hover { background: #f4f8f7; border-color: #b9cbc5; }
@@ -198,6 +203,9 @@ h2 { font-family: Georgia, serif; font-size: 22px; }
 .scenario-chip.emergency small { color: #a34a41; }
 .scenario-chip.mental { background: #faf8fd; }
 .scenario-chip.schedule { background: #f7fafc; }
+.scenario-row { background: #fff; }
+.scenario-chip { border-color: #dfe8e5; box-shadow: 0 1px 3px rgba(18,47,58,.025); }
+.scenario-chip:hover:not(:disabled) { border-color: #91b4a8; background: #fbfdfc; }
 .conversation { display: flex; flex-direction: column; }
 .empty-state { height: 180px; display: grid; place-items: center; align-content: center; color: #81918d; }
 .empty-state span { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: #eaf3f0; color: #3d7767; margin-bottom: 8px; }
@@ -339,8 +347,10 @@ h2 { font-family: Georgia, serif; font-size: 22px; }
   .intake-grid { grid-template-columns: repeat(3, minmax(150px, 1fr)); }
   .intake-item { min-height: 42px; }
   .intake-item strong { white-space: normal; line-height: 1.15; }
-  .scenario-row { grid-template-columns: repeat(3, minmax(180px, 1fr)); height: 112px; overflow-y: auto; }
-  .scenario-chip { min-height: 50px; }
+  .scenario-row { grid-template-columns: repeat(3, minmax(180px, 1fr)); height: 112px; min-height: 112px; overflow-y: auto; overflow-x: hidden; }
+  .scenario-chip { min-height: 50px; height: 50px; align-content: center; }
+  .scenario-chip span { white-space: normal; line-height: 1.12; }
+  .scenario-chip small { line-height: 1.15; }
 }
 
 .role-toggle {
@@ -386,8 +396,8 @@ h2 { font-family: Georgia, serif; font-size: 22px; }
 .clinician-sidework .workbench-actions button { padding: 8px 6px; font-size: 10px; }
 
 @media (max-height: 700px) {
-  .scenario-row { flex: 0 0 48px; min-height: 48px; overflow-x: auto; }
-  .scenario-chip { min-height: 38px; }
+  .scenario-row { flex: 0 0 112px; height: 112px; min-height: 112px; overflow-x: hidden; overflow-y: auto; }
+  .scenario-chip { min-height: 50px; height: 50px; }
   .scenario-chip span { white-space: normal; line-height: 1.12; }
   .scenario-chip small { margin-top: 3px; }
   .clinician-sidework { padding: 8px; }
@@ -421,8 +431,8 @@ h2 { font-family: Georgia, serif; font-size: 22px; }
   .intake-heading { margin-bottom: 4px; }
   .intake-grid { gap: 4px; }
   .intake-item { padding: 4px; }
-  .scenario-row { flex: 0 0 42px; min-height: 42px; padding: 4px 24px; gap: 6px; }
-  .scenario-chip { min-height: 34px; padding: 4px 7px; }
+  .scenario-row { height: 112px; min-height: 112px; padding: 6px 12px; gap: 6px; }
+  .scenario-chip { min-height: 50px; height: 50px; padding: 5px 7px; }
   .message-list { flex: 1 1 auto; height: auto; min-height: 80px; padding: 8px 24px 12px; }
   .composer-wrap { padding: 12px; }
   .composer { min-height: 150px; }
