@@ -1,51 +1,88 @@
-# MedBridge AI — Jurisdiction-Aware Multi-Agent Telemedicine Platform
+# MedBridge AI
 
-**Innodata AI Catalyst ’26 — University Track (Healthcare Domain)**
+MedBridge AI is a human-centric telemedicine dashboard demo built with React, TypeScript, Vite, and FastAPI. It includes chat-based intake, PDF/JPG/PNG attachments, patient profile management, appointment scheduling, deterministic red-flag triage, and in-memory workflow events.
 
-MedBridge AI is an event-driven, human-centric multi-agent telemedicine platform designed to alleviate global specialist deficits and clinician documentation burnout while maintaining strict clinical safety boundaries.
+All application data is stored in memory and reset on backend restart.
 
----
-
-## Key Capabilities & Safety Architecture
-
-- **Event-Driven Blackboard Topology:** Agents never call each other directly. State transitions are persisted in PostgreSQL and published via a central Event Bus (`intake.completed`, `triage.completed`, `appointment.rescheduled`, `consultation.ended`, `prescription.approved`).
-- **Scoped Model Context Protocol (MCP) Servers:** All data access flows through permission-enforced MCP servers (`Records`, `Scheduling`, `Lab`, `Knowledge`, `Notification`), preventing prompt injection and unauthorized cross-patient reads.
-- **Deterministic Non-LLM Guardrails:**
-  - Real-time red-flag emergency interruption outside LLM control.
-  - **Jurisdiction-Aware Care Routing (`LOCAL_CLINICAL` vs. `GLOBAL_CONSULT`):** Routes acute infectious/regional illnesses (e.g., dengue) to locally licensed physicians while unlocking verified cross-border specialists for mental health and consultative care.
-  - Rule-based drug-allergy and interaction checking.
-- **Mandatory Human-in-the-Loop Governance:** Unverified differential diagnoses are hidden from patients, and every prescription/SOAP note requires explicit physician review and digital sign-off.
-
----
-
-## Repository Structure
+## Project structure
 
 ```text
-university-project/
-├── project/
-│   ├── main.py              # Phase 1 MVP entry point & event-bus bootstrap
-│   └── requirements.txt     # Python dependencies
-├── README.md                # Project overview & quickstart
-└── docs/
-    ├── Proposal.docx        # Official competition proposal (Submitted Nov 20, 2026)
-    ├── Workflow.md          # End-to-end event, agent & MCP workflow specification
-    └── PROJECT_DETAILS.md   # Architecture, database schema, risk & benchmark plan
+backend/
+  app/main.py
+  app/models.py
+  app/state.py
+  requirements.txt
+frontend/
+  src/App.tsx
+  src/styles.css
+  src/types.ts
 ```
 
----
+## Prerequisites
 
-## Quickstart (Phase 1 Setup)
+- Python 3.10+
+- Node.js 18+
+- npm
+
+## Run the backend
+
+From the repository root:
 
 ```bash
-cd project
+cd backend
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-python main.py
 ```
 
----
+Activate the environment:
 
-## Timeline
+```powershell
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+```
 
-- **20 November 2026:** Proposal Submission (`docs/Proposal.docx`) & Repository Initialization
+```bash
+# macOS/Linux
+source .venv/bin/activate
+```
+
+Install and start FastAPI:
+
+```bash
+pip install -r requirements.txt
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+API documentation is available at `http://localhost:8000/docs`.
+
+## Run the frontend
+
+Open a second terminal from the repository root:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`.
+
+## REST API
+
+- `GET /api/health`
+- `GET /api/profile`
+- `PUT /api/profile`
+- `GET /api/chat/messages`
+- `POST /api/chat/messages`
+- `GET /api/chat/attachments/{attachment_id}`
+- `GET /api/appointments`
+- `POST /api/appointments`
+- `PATCH /api/appointments/{appointment_id}`
+- `DELETE /api/appointments/{appointment_id}`
+- `GET /api/events`
+- `POST /api/reset`
+
+## Demo notes
+
+- PDF, JPG, and PNG uploads are accepted up to 10 MB.
+- Red flags are triggered deterministically for configured emergency keywords such as chest pain, severe breathing difficulty, stroke signs, and dengue warning signs.
+- Appointment natural-language rescheduling understands day names and morning, afternoon, or evening preferences.
